@@ -17,8 +17,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject titleCard;
     [SerializeField] GameObject startButton;
     [SerializeField] GameObject retryButton;
+    [SerializeField] GameObject diecIcon;
     List<Dice> liveDice = new List<Dice>();
     int allowedNumFrames = 300;
+    int maxAllowedFrames = 300;
     bool active = false;
     static int scoreSave = -1;
 
@@ -52,9 +54,11 @@ public class GameManager : MonoBehaviour
             dice.gm = this;
         }
         allowedNumFrames = (int)(200 * (1 / (speed / 4f)));
+        maxAllowedFrames = allowedNumFrames;
     }
     void Start()
     {
+        diecIcon.transform.localScale = Vector3.one;
         if (scoreSave != -1)
         {
             score = scoreSave;
@@ -79,6 +83,7 @@ public class GameManager : MonoBehaviour
 
     private void Lose()
     {
+        diecIcon.transform.localScale = Vector3.one;
         liveDice.ForEach(d => Destroy(d));
         liveDice = new List<Dice>();
         active = false;
@@ -127,6 +132,7 @@ public class GameManager : MonoBehaviour
                 Lose();
                 return;
             }
+            diecIcon.transform.localScale = new Vector3(allowedNumFrames / (float)maxAllowedFrames, allowedNumFrames / (float)maxAllowedFrames, allowedNumFrames / (float)maxAllowedFrames);
         }
         if (!knife.animating && liveDice.Any(d => d.readyToCut && d.cutRenderers.Count > d.targetCutCount))
         {

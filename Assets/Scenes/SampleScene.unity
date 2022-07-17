@@ -392,6 +392,7 @@ MonoBehaviour:
   titleCard: {fileID: 549028514}
   startButton: {fileID: 5290579}
   retryButton: {fileID: 709831232}
+  diecIcon: {fileID: 1472138069}
 --- !u!4 &631165064
 Transform:
   m_ObjectHideFlags: 0
@@ -818,6 +819,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1472138069 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7462742082060360389, guid: 657431b9ebd94814295ae94cc4502795, type: 3}
+  m_PrefabInstance: {fileID: 1486254911}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1486254911
 PrefabInstance:
   m_ObjectHideFlags: 0
