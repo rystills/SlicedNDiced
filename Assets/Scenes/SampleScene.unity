@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruitMat: {fileID: 2100000, guid: 7cdd62d4688fcde48b633a88db1cd3a1, type: 2}
+  diceMat: {fileID: 2100000, guid: adb1c9ab5475d3a43bd67a5fcf74a52a, type: 2}
   lrPrefab: {fileID: 8846637773385325676, guid: 61cff897387ddad458e30b23422129d6, type: 3}
   rb: {fileID: 637005877}
 --- !u!54 &637005877
@@ -652,6 +653,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 4cb9a0aedb6f3a64a82790606e8d0601, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: adb1c9ab5475d3a43bd67a5fcf74a52a, type: 2}
     - target: {fileID: 919132149155446097, guid: 4cb9a0aedb6f3a64a82790606e8d0601, type: 3}
       propertyPath: m_Name
       value: dice
