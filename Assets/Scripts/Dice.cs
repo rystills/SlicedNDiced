@@ -9,6 +9,7 @@ public class Dice : MonoBehaviour
     [SerializeField] Material fruitMat;
     [SerializeField] Material diceMat;
     [SerializeField] GameObject lrPrefab;
+    [SerializeField] Knife knife;
     [SerializeField] Rigidbody rb;
     LineRenderer lr;
     int numIdleFrames = 5;
@@ -53,8 +54,8 @@ public class Dice : MonoBehaviour
 
     private bool ValidateCut(Vector3 s, Vector3 e)
     {
-        s.y -= 1.5f;
-        e.y -= 1.5f;
+        s.y -= 2.5f;
+        e.y -= 2.5f;
         //Debug.DrawRay(s,(e-s),Color.blue,100);
         return Physics.Raycast(new Ray(s, (e-s).normalized), (e-s).magnitude, LayerMask.GetMask("dice")) &&
                Physics.Raycast(new Ray(e, (s-e).normalized), (s-e).magnitude, LayerMask.GetMask("dice"));
@@ -69,12 +70,12 @@ public class Dice : MonoBehaviour
                 midCut = true;
                 lr = Instantiate(lrPrefab).GetComponent<LineRenderer>();
                 lr.positionCount += 2;
-                lr.SetPosition(0, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 9));
-                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 9));
+                lr.SetPosition(0, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8));
+                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8));
             }
             else if (midCut)
             {
-                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 9));
+                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8));
                 if (Input.GetMouseButtonUp(0)) {
                     midCut = false;
                     if (!ValidateCut(lr.transform.TransformPoint(lr.GetPosition(0)), lr.transform.TransformPoint(lr.GetPosition(1))))
@@ -97,7 +98,7 @@ public class Dice : MonoBehaviour
                     {
                         try
                         {
-                            newSlices.AddRange(slices[i].SliceInstantiate(lr.GetPosition(0) - Vector3.up * 1.5f, Vector3.Cross(lr.GetPosition(1) - lr.GetPosition(0), Vector3.up)));
+                            newSlices.AddRange(slices[i].SliceInstantiate(lr.GetPosition(0) - Vector3.up * 2.5f, Vector3.Cross(lr.GetPosition(1) - lr.GetPosition(0), Vector3.up)));
                             Destroy(slices[i]);
                             slices.RemoveAt(i--);
                             continue;
@@ -109,10 +110,11 @@ public class Dice : MonoBehaviour
                     }
                     slices.AddRange(newSlices);
                 }
-                //Destroy(gameObject);
                 MeshRenderer mr;
                 foreach (GameObject go in slices)
                 {
+                    go.AddComponent<Rigidbody>().AddExplosionForce(2500, go.transform.position, 100,-20);
+                    go.AddComponent<MeshCollider>().convex = true;
                     List<Material> mats = new List<Material>();
                     mr = go.GetComponent<MeshRenderer>();
                     mr.GetMaterials(mats);
@@ -126,6 +128,7 @@ public class Dice : MonoBehaviour
                     mr.materials = mats.ToArray();
                 }
                 cutRenderers = new List<LineRenderer>();
+                knife.animate(slices);
             }
         }
     }
