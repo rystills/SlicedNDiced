@@ -14,14 +14,14 @@ public class Dice : MonoBehaviour
     public GameManager gm;
     LineRenderer lr;
     int numIdleFrames = 10;
-    bool readyToCut = false;
+    public bool readyToCut = false;
     bool midCut = false;
     List<int> sideVals = new List<int>
     {
         3,4,1,6,5,2
     };
-    int targetCutCount;
-    List<LineRenderer> cutRenderers = new List<LineRenderer>();
+    public int targetCutCount;
+    public List<LineRenderer> cutRenderers = new List<LineRenderer>();
 
     void Start()
     {
@@ -87,6 +87,7 @@ public class Dice : MonoBehaviour
                 lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 19));
                 if (Input.GetMouseButtonUp(0)) {
                     midCut = false;
+                    gameObject.layer = LayerMask.NameToLayer("dice");
                     if (!ValidateCut(lr.transform.TransformPoint(lr.GetPosition(0)), lr.transform.TransformPoint(lr.GetPosition(1))))
                     {
                         Destroy(lr.gameObject);
@@ -95,50 +96,52 @@ public class Dice : MonoBehaviour
                     {
                         cutRenderers.Add(lr);
                     }
+                    gameObject.layer = LayerMask.NameToLayer("Default");
                 }
-            }
-            if (cutRenderers.Count == targetCutCount)
-            {
-                List<GameObject> slices = new List<GameObject>() { gameObject };
-                foreach (LineRenderer lr in cutRenderers)
-                {
-                    List<GameObject> newSlices = new List<GameObject>();
-                    for (int i = 0; i < slices.Count; ++i)
-                    {
-                        try
-                        {
-                            newSlices.AddRange(slices[i].SliceInstantiate(lr.GetPosition(0) - Vector3.up * 2.5f, Vector3.Cross(lr.GetPosition(1) - lr.GetPosition(0), Vector3.up)));
-                            Destroy(slices[i]);
-                            slices.RemoveAt(i--);
-                            continue;
-                        }
-                        catch(System.Exception e)
-                        {
-                            // attempted to slice a non-intersecting poly (or unhandled error)
-                        }
-                    }
-                    slices.AddRange(newSlices);
-                }
-                MeshRenderer mr;
-                foreach (GameObject go in slices)
-                {
-                    go.AddComponent<Rigidbody>().AddExplosionForce(2500, go.transform.position, 100,-20);
-                    go.AddComponent<MeshCollider>().convex = true;
-                    List<Material> mats = new List<Material>();
-                    mr = go.GetComponent<MeshRenderer>();
-                    mr.GetMaterials(mats);
-                    for (int i = 0; i < mats.Count; ++i)
-                    {
-                        if (mats[i].mainTexture != diceMat.mainTexture)
-                        {
-                            mats[i] = fruitMat;
-                        }
-                    }
-                    mr.materials = mats.ToArray();
-                }
-                cutRenderers = new List<LineRenderer>();
-                knife.animate(slices);
             }
         }
+    }
+
+    public List<GameObject> Slice()
+    {
+        List<GameObject> slices = new List<GameObject>() { gameObject };
+        foreach (LineRenderer lr in cutRenderers)
+        {
+            List<GameObject> newSlices = new List<GameObject>();
+            for (int i = 0; i < slices.Count; ++i)
+            {
+                try
+                {
+                    newSlices.AddRange(slices[i].SliceInstantiate(lr.GetPosition(0) - Vector3.up * 2.5f, Vector3.Cross(lr.GetPosition(1) - lr.GetPosition(0), Vector3.up)));
+                    Destroy(slices[i]);
+                    slices.RemoveAt(i--);
+                    continue;
+                }
+                catch (System.Exception e)
+                {
+                    // attempted to slice a non-intersecting poly (or unhandled error)
+                }
+            }
+            slices.AddRange(newSlices);
+        }
+        MeshRenderer mr;
+        foreach (GameObject go in slices)
+        {
+            go.AddComponent<Rigidbody>().AddExplosionForce(2500, go.transform.position, 100, -20);
+            go.AddComponent<MeshCollider>().convex = true;
+            List<Material> mats = new List<Material>();
+            mr = go.GetComponent<MeshRenderer>();
+            mr.GetMaterials(mats);
+            for (int i = 0; i < mats.Count; ++i)
+            {
+                if (mats[i].mainTexture != diceMat.mainTexture)
+                {
+                    mats[i] = fruitMat;
+                }
+            }
+            mr.materials = mats.ToArray();
+        }
+        cutRenderers = new List<LineRenderer>();
+        return slices;
     }
 }
