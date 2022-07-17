@@ -26,7 +26,7 @@ public class Dice : MonoBehaviour
     {
         // randomize initial rotation and set semi-random "throw" force
         transform.rotation = Quaternion.Euler(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
-        rb.AddForce(new Vector3(Random.Range(1.5f, 2.7f), Random.Range(.8f, 1.4f), Random.Range(-.2f, .2f))*5,ForceMode.Impulse);
+        rb.AddForce(new Vector3(Random.Range(1.7f, 2.8f), Random.Range(1.4f, 2.1f), Random.Range(-.3f, .3f))*5,ForceMode.Impulse);
         rb.AddTorque(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f))*10, ForceMode.Impulse);
     }
 
