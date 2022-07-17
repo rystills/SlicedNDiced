@@ -7,6 +7,7 @@ using UnityEngine;
 public class Dice : MonoBehaviour
 {
     [SerializeField] Material fruitMat;
+    [SerializeField] Material diceMat;
     [SerializeField] GameObject lrPrefab;
     [SerializeField] Rigidbody rb;
     LineRenderer lr;
@@ -18,6 +19,7 @@ public class Dice : MonoBehaviour
         3,4,1,6,5,2
     };
     int targetCutCount;
+    List<LineRenderer> cutRenderers = new List<LineRenderer>();
 
     void Start()
     {
@@ -79,21 +81,51 @@ public class Dice : MonoBehaviour
                     {
                         Destroy(lr.gameObject);
                     }
+                    else
+                    {
+                        cutRenderers.Add(lr);
+                    }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (cutRenderers.Count == targetCutCount)
             {
-                GameObject[] halves = gameObject.SliceInstantiate(transform.position, Vector3.up);
-                Destroy(gameObject);
+                List<GameObject> slices = new List<GameObject>() { gameObject };
+                foreach (LineRenderer lr in cutRenderers)
+                {
+                    List<GameObject> newSlices = new List<GameObject>();
+                    for (int i = 0; i < slices.Count; ++i)
+                    {
+                        try
+                        {
+                            newSlices.AddRange(slices[i].SliceInstantiate(lr.GetPosition(0) - Vector3.up * 1.5f, Vector3.Cross(lr.GetPosition(1) - lr.GetPosition(0), Vector3.up)));
+                            Destroy(slices[i]);
+                            slices.RemoveAt(i--);
+                            continue;
+                        }
+                        catch(System.Exception e)
+                        {
+                            // attempted to slice a non-intersecting poly (or unhandled error)
+                        }
+                    }
+                    slices.AddRange(newSlices);
+                }
+                //Destroy(gameObject);
                 MeshRenderer mr;
-                foreach (GameObject go in halves)
+                foreach (GameObject go in slices)
                 {
                     List<Material> mats = new List<Material>();
                     mr = go.GetComponent<MeshRenderer>();
                     mr.GetMaterials(mats);
-                    mats[1] = fruitMat;
+                    for (int i = 0; i < mats.Count; ++i)
+                    {
+                        if (mats[i].mainTexture != diceMat.mainTexture)
+                        {
+                            mats[i] = fruitMat;
+                        }
+                    }
                     mr.materials = mats.ToArray();
                 }
+                cutRenderers = new List<LineRenderer>();
             }
         }
     }
