@@ -13,7 +13,7 @@ public class Dice : MonoBehaviour
     [SerializeField] Rigidbody rb;
     public GameManager gm;
     LineRenderer lr;
-    int numIdleFrames = 5;
+    int numIdleFrames = 10;
     bool readyToCut = false;
     bool midCut = false;
     List<int> sideVals = new List<int>
@@ -38,17 +38,25 @@ public class Dice : MonoBehaviour
         {
             if (--numIdleFrames == 0)
             {
-                readyToCut = true;
-                List<Vector3> sideAngles = new List<Vector3>
+                if (transform.position.y > -2)
                 {
-                    transform.up,
-                    -transform.up,
-                    transform.right,
-                    -transform.right,
-                    transform.forward,
-                    -transform.forward
-                };
-                targetCutCount = sideVals[sideAngles.IndexOf(sideAngles.Aggregate((a, b) => Vector3.Angle(a, Vector3.up) < Vector3.Angle(b, Vector3.up) ? a : b))];
+                    numIdleFrames = 5;
+                    transform.position = new Vector3(transform.position.x + 1f, -2, transform.position.z);
+                }
+                else
+                {
+                    readyToCut = true;
+                    List<Vector3> sideAngles = new List<Vector3>
+                    {
+                        transform.up,
+                        -transform.up,
+                        transform.right,
+                        -transform.right,
+                        transform.forward,
+                        -transform.forward
+                    };
+                    targetCutCount = sideVals[sideAngles.IndexOf(sideAngles.Aggregate((a, b) => Vector3.Angle(a, Vector3.up) < Vector3.Angle(b, Vector3.up) ? a : b))];
+                }
             }
         }
     }
@@ -71,12 +79,12 @@ public class Dice : MonoBehaviour
                 midCut = true;
                 lr = Instantiate(lrPrefab).GetComponent<LineRenderer>();
                 lr.positionCount += 2;
-                lr.SetPosition(0, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8));
-                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8));
+                lr.SetPosition(0, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 19));
+                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 19));
             }
             else if (midCut)
             {
-                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8));
+                lr.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 19));
                 if (Input.GetMouseButtonUp(0)) {
                     midCut = false;
                     if (!ValidateCut(lr.transform.TransformPoint(lr.GetPosition(0)), lr.transform.TransformPoint(lr.GetPosition(1))))

@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 1 + (score/5); ++i)
         {
             Dice dice = Instantiate(dicePrefab).GetComponent<Dice>();
+            dice.transform.Translate(new Vector3(0,1,0) * (5f*i));
             dice.knife = knife;
             dice.gm = this;
         }
