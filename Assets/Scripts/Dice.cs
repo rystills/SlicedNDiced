@@ -9,8 +9,9 @@ public class Dice : MonoBehaviour
     [SerializeField] Material fruitMat;
     [SerializeField] Material diceMat;
     [SerializeField] GameObject lrPrefab;
-    [SerializeField] Knife knife;
+    public Knife knife;
     [SerializeField] Rigidbody rb;
+    public GameManager gm;
     LineRenderer lr;
     int numIdleFrames = 5;
     bool readyToCut = false;

@@ -9,6 +9,7 @@ public class Knife : MonoBehaviour
     [SerializeField] BoxCollider col;
     [SerializeField] Rigidbody rb;
     [SerializeField] MeshCollider funnelCol;
+    [SerializeField] GameManager gm;
     int delayFrames = 0;
     List<GameObject> slices;
 
@@ -29,7 +30,7 @@ public class Knife : MonoBehaviour
     {
         animating = true;
         transform.position = initialPos;
-        delayFrames = 60;
+        delayFrames = (int)(60 * (1 / gm.speed));
         this.slices = slices;
     }
 
@@ -37,13 +38,15 @@ public class Knife : MonoBehaviour
     {
         if (animating && delayFrames == 0)
         {
-            transform.Translate(Vector3.forward * 40 * Time.deltaTime);
-            if (transform.position.x > 15)
+            transform.Translate(Vector3.forward * 55 * Time.deltaTime * (gm.speed));
+            if (transform.position.x > 18)
             {
                 animating = false;
                 col.enabled = false;
                 funnelCol.enabled = true;
                 rb.velocity = Vector3.zero;
+                gm.incrementScore();
+                slices.ForEach(s => Destroy(s));
             }
             else
             {
