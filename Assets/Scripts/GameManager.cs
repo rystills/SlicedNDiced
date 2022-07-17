@@ -20,12 +20,18 @@ public class GameManager : MonoBehaviour
     List<Dice> liveDice = new List<Dice>();
     int allowedNumFrames = 300;
     bool active = false;
+    static int scoreSave = -1;
 
+
+    private void SetScoreText()
+    {
+        scoreText.text = score.ToString();
+        scoreOutline.text = score.ToString();
+    }
     public void incrementScore()
     {
         ++score;
-        scoreText.text = score.ToString();
-        scoreOutline.text = score.ToString();
+        SetScoreText();
         scoreAnimator.SetBool("score_up", true);
         scoreAnimator.playbackTime = 0;
         scoreAnimator.Play("score_increase");
@@ -47,6 +53,16 @@ public class GameManager : MonoBehaviour
         }
         allowedNumFrames = (int)(200 * (1 / (speed / 4f)));
     }
+    void Start()
+    {
+        if (scoreSave != -1)
+        {
+            score = scoreSave;
+            retryButton.SetActive(true);
+            startButton.SetActive(false);
+            SetScoreText();
+        }
+    }
 
     private void StartGame()
     {
@@ -55,6 +71,7 @@ public class GameManager : MonoBehaviour
         retryButton.SetActive(false);
         active = true;
         score = 0;
+        SetScoreText();
         speed = 1;
         startWave();
         Physics.autoSimulation = false;
@@ -67,6 +84,7 @@ public class GameManager : MonoBehaviour
         active = false;
         titleCard.SetActive(true);
         retryButton.SetActive(true);
+        scoreSave = score;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
