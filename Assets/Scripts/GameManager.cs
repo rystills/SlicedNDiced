@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     private void Lose()
     {
-        Debug.Log("lmao");
+        Debug.Log("lose");
     }
 
     public void FixedUpdate()
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         }
         if (timeRem > 0)
         {
-            Physics.Simulate(Time.fixedDeltaTime * (timeRem/1));
+            Physics.Simulate(Time.fixedDeltaTime * (timeRem / 1));
         }
         if (liveDice.Count == 0)
         {
@@ -63,12 +63,16 @@ public class GameManager : MonoBehaviour
 
         if (liveDice.Any(d => d.readyToCut) && !knife.animating)
         {
-            Debug.Log(allowedNumFrames);
+            //Debug.Log(allowedNumFrames);
             if (--allowedNumFrames == 0)
             {
                 Lose();
                 return;
             }
+        }
+        if (!knife.animating && liveDice.Any(d => d.readyToCut && d.cutRenderers.Count > d.targetCutCount))
+        {
+            Lose();
         }
 
         if (!knife.animating)

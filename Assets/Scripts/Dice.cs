@@ -46,6 +46,7 @@ public class Dice : MonoBehaviour
                 else
                 {
                     readyToCut = true;
+                    transform.GetChild(0).gameObject.SetActive(true);
                     List<Vector3> sideAngles = new List<Vector3>
                     {
                         transform.up,
@@ -141,6 +142,7 @@ public class Dice : MonoBehaviour
             }
             mr.materials = mats.ToArray();
         }
+        cutRenderers.ForEach(cr => Destroy(cr.gameObject));
         cutRenderers = new List<LineRenderer>();
         return slices;
     }
