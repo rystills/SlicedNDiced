@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruitMat: {fileID: 2100000, guid: 7cdd62d4688fcde48b633a88db1cd3a1, type: 2}
+  lrPrefab: {fileID: 8846637773385325676, guid: 61cff897387ddad458e30b23422129d6, type: 3}
   rb: {fileID: 637005877}
 --- !u!54 &637005877
 Rigidbody:
@@ -654,6 +655,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4cb9a0aedb6f3a64a82790606e8d0601, type: 3}
       propertyPath: m_Name
       value: dice
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4cb9a0aedb6f3a64a82790606e8d0601, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4cb9a0aedb6f3a64a82790606e8d0601, type: 3}
