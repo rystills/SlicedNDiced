@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -9,12 +10,18 @@ public class GameManager : MonoBehaviour
     public float speed = 1;
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Knife knife;
+    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] TextMeshProUGUI scoreOutline;
+    [SerializeField] Animator scoreAnimator;
     List<Dice> liveDice = new List<Dice>();
     int allowedNumFrames = 300;
 
     public void incrementScore()
     {
         ++score;
+        scoreText.text = score.ToString();
+        scoreOutline.text = score.ToString();
+        scoreAnimator.Play("score_increase");
         speed = 1 + .1f * score;
         startWave();
     }
