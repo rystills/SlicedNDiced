@@ -13,15 +13,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI scoreOutline;
     [SerializeField] Animator scoreAnimator;
+    [SerializeField] GameObject titleCard;
+    [SerializeField] GameObject startButton;
+    [SerializeField] GameObject retryButton;
     List<Dice> liveDice = new List<Dice>();
     int allowedNumFrames = 300;
+    bool active = false;
 
     public void incrementScore()
     {
         ++score;
         scoreText.text = score.ToString();
         scoreOutline.text = score.ToString();
+        scoreAnimator.SetBool("score_up", true);
+        scoreAnimator.playbackTime = 0;
         scoreAnimator.Play("score_increase");
+        scoreAnimator.SetBool("score_up", false);
         speed = 1 + .1f * score;
         startWave();
     }
@@ -40,19 +47,43 @@ public class GameManager : MonoBehaviour
         allowedNumFrames = (int)(200 * (1 / (speed / 4f)));
     }
 
-    private void Start()
+    private void StartGame()
     {
+        titleCard.SetActive(false);
+        startButton.SetActive(false);
+        retryButton.SetActive(false);
+        active = true;
+        score = 0;
+        speed = 1;
         startWave();
         Physics.autoSimulation = false;
     }
 
     private void Lose()
     {
-        Debug.Log("lose");
+        liveDice.ForEach(d => Destroy(d));
+        liveDice = new List<Dice>();
+        active = false;
+        titleCard.SetActive(true);
+        retryButton.SetActive(true);
+    }
+
+    private void Update()
+    {
+        if (active)
+            return;
+        if (Input.GetMouseButtonDown(0))
+        {
+            StartGame();
+        }
     }
 
     public void FixedUpdate()
     {
+        if (!active)
+        {
+            return;
+        }
         float timeRem = speed;
         while (timeRem >= 1)
         {
