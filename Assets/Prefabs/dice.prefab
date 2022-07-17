@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7948612984338228941}
   - component: {fileID: 7948612984338228942}
   - component: {fileID: 7948612984338228940}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: dice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,3 +133,6 @@ MonoBehaviour:
   knife: {fileID: 0}
   rb: {fileID: 7948612984338228941}
   gm: {fileID: 0}
+  readyToCut: 0
+  targetCutCount: 0
+  cutRenderers: []
