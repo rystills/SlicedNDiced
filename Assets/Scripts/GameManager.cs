@@ -7,10 +7,10 @@ public class GameManager : MonoBehaviour
 {
     public int score = 0;
     public float speed = 1;
-    public int lives = 3;
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Knife knife;
     List<Dice> liveDice = new List<Dice>();
+    int allowedNumFrames = 300;
 
     public void incrementScore()
     {
@@ -30,12 +30,18 @@ public class GameManager : MonoBehaviour
             dice.knife = knife;
             dice.gm = this;
         }
+        allowedNumFrames = (int)(200 * (1 / (speed / 4f)));
     }
 
     private void Start()
     {
         startWave();
         Physics.autoSimulation = false;
+    }
+
+    private void Lose()
+    {
+        Debug.Log("lmao");
     }
 
     public void FixedUpdate()
@@ -54,6 +60,17 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        if (liveDice.Any(d => d.readyToCut) && !knife.animating)
+        {
+            Debug.Log(allowedNumFrames);
+            if (--allowedNumFrames == 0)
+            {
+                Lose();
+                return;
+            }
+        }
+
         if (!knife.animating)
         {
             foreach (Dice d in liveDice)
@@ -63,7 +80,6 @@ public class GameManager : MonoBehaviour
                     return;
                 }
             }
-            Debug.Log("ready to cut");
             knife.animate(liveDice.SelectMany(d => d.Slice()).ToList());
         }
     }
